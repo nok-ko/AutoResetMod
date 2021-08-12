@@ -1,7 +1,7 @@
 ## AutoRest+
 This is an edit of Duncans AutoResetMod that allows for Set Seed speedruns as well as Random Seed. Everything below this section is from the original mod. Anything unique to this mod will be in this section.
 
-Before you do anything, make sure you delete the original version of the mod and the old attempts.txt. (The mod currently lumps together both set and random seed attempts, this will most likely be changed in the future.)
+Before you do anything, make sure you delete the original version of the mod and the old attempts.txt. You can put your previous RSG reset count after you do a run. Just replace the 1 with your count. (The mod now keeps track of both RSG and SSG attempts seperately.)
 
 To use the set seed aspect of the mod, click the seeds, input your seed, and then click the diamond boots. Now whenever you quit it will automatically create a new world with your given seed. To stop resetting it's the same as with Duncans original mod. To use the random seed aspect, just click the golden boots.
 
