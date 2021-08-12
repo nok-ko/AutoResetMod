@@ -16,6 +16,12 @@ Note for resource pack creators: the "Stop Resets & Quit" button can be changed 
 
 ## Changelog
 
+### v1.2.0
+- Added big text field for setting seed
+- Added attempt seed to the attempts.txt file
+- Made all Mixins client-only
+- (Author: nokko)
+
 ### v1.1.0
 - Added World Counters (.minecraft/attempts.txt to change)
 
