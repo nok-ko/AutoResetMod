@@ -1,11 +1,13 @@
 ## Set Seed Edit
 This is an edit of Duncans AutoResetMod that allows for Set Seed speedruns as well as Random Seed. Everything below this section is from the original mod. Anything unique to this mod will be in this section.
 
-To use the set seed aspect of the mod, click the seeds, input your seed, and then click the diamond boots. Now whenever you quit it will automatically create a new world with your given seed. To stop resetting it's the same as with Duncans original mod.
+Before you do anything, make sure you delete the original version of the mod and the old attempts.txt. (The mod currently lumps together both set and random seed attempts, this will most likely be changed in the future.)
+
+To use the set seed aspect of the mod, click the seeds, input your seed, and then click the diamond boots. Now whenever you quit it will automatically create a new world with your given seed. To stop resetting it's the same as with Duncans original mod. To use the random seed aspect, just click the golden boots.
 
 This mod is not officially allowed for runs on http://speedrun.com/mc and its category extensions. If you submit a run there using this it will be denied. 
 
-If you have previously used Duncans mod delete the attempts.txt file in your minecraft directory. Currently it saves both RSG and SSG attempts together, will be changed in the future.
+
 ## Usage
 
 Press the golden boots button on the main menu to start the world resetting mode.
