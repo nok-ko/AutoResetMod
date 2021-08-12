@@ -1,4 +1,4 @@
-## Set Seed Edit
+## AutoRest+
 This is an edit of Duncans AutoResetMod that allows for Set Seed speedruns as well as Random Seed. Everything below this section is from the original mod. Anything unique to this mod will be in this section.
 
 Before you do anything, make sure you delete the original version of the mod and the old attempts.txt. (The mod currently lumps together both set and random seed attempts, this will most likely be changed in the future.)
