@@ -43,7 +43,8 @@ public abstract class CreateWorldScreenMixin {
                 ((OptionsAccessor) this.moreOptionsDialog).setGeneratorOptions(GeneratorOptions.fromProperties(worldGenProperties));
             }
 
-            levelNameField.setText("Speedrun #"+AutoReset.getNextAttempt());
+            int attempt = AutoReset.getNextAttempt(moreOptionsDialog.getGeneratorOptions(false).getSeed());
+            levelNameField.setText("Speedrun #" + attempt);
             createLevel();
         }
     }
