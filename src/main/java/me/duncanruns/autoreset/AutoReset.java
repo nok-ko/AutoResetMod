@@ -23,12 +23,17 @@ public class AutoReset implements ModInitializer {
         LOGGER.log(level, "[" + MOD_NAME + "] " + message);
     }
 
+    // this Scanner code is the least idiomatic Java I've ever written but it works, okay?!
     public static String getLastSeed() throws IOException {
         String seed = "";
         File file = new File("attempts.txt");
         if (file.exists() && file.canRead()) {
             Scanner fileReader = new Scanner(file);
-            String string = fileReader.nextLine().trim();
+            String string = "";
+            while (fileReader.hasNextLine()) {
+                string = fileReader.nextLine();
+            }
+            string = string.trim();
             fileReader.close();
             if (string.contains(";") && string.length() > 1) {
                 seed = string.substring(string.indexOf(";")+1);
@@ -43,7 +48,11 @@ public class AutoReset implements ModInitializer {
             int value;
             if (file.exists()) {
                 Scanner fileReader = new Scanner(file);
-                String string = fileReader.nextLine().trim();
+                String string = "0;0";
+                while (fileReader.hasNextLine()) {
+                    string = fileReader.nextLine();
+                }
+                string = string.trim();
                 fileReader.close();
                 try {
                     value = Integer.parseInt(string.substring(0, string.indexOf(";")));
@@ -54,11 +63,11 @@ public class AutoReset implements ModInitializer {
                 value = 0;
             }
             value++;
-            FileWriter fileWriter = new FileWriter(file);
+            FileWriter fileWriter = new FileWriter(file, true);
 
-            String seedOrRandom = AutoReset.isSetSeed ? seed : String.valueOf(seedValue);
+            String seedOrRandom = AutoReset.isSetSeed ? AutoReset.seed : String.valueOf(seedValue);
 
-            fileWriter.write(String.format("%d;%s", value, seedOrRandom));
+            fileWriter.append(String.format("%d;%s\n", value, seedOrRandom));
             fileWriter.close();
             return value;
         } catch (IOException ignored) {

@@ -48,7 +48,7 @@ public abstract class TitleScreenMixin extends Screen {
             // Add new button for starting auto resets.
             this.addButton(new ButtonWidget(this.width / 2 - 124, y, 20, 20, new LiteralText(""), (buttonWidget) -> {
                 AutoReset.isPlaying = true;
-                AutoReset.isSetSeed = seedTextField.isVisible();
+                AutoReset.isSetSeed = seedTextField.isVisible() && !seedTextField.getText().isEmpty();
                 client.openScreen(new CreateWorldScreen(this));
             }));
 
