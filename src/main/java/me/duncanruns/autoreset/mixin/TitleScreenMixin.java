@@ -22,6 +22,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(TitleScreen.class)
 public abstract class TitleScreenMixin extends Screen {
     private static final Identifier GOLD_BOOTS = new Identifier("textures/item/golden_boots.png");
+    private static final Identifier DIAMOND_BOOTS = new Identifier("textures/item/diamond_boots.png");
+    private static final Identifier SEEDS = new Identifier("textures/item/wheat_seeds.png");
     private TextFieldWidget seedTextField;
 
     protected TitleScreenMixin(Text title) {
@@ -46,6 +48,7 @@ public abstract class TitleScreenMixin extends Screen {
             // Add new button for starting auto resets.
             this.addButton(new ButtonWidget(this.width / 2 - 124, y, 20, 20, new LiteralText(""), (buttonWidget) -> {
                 AutoReset.isPlaying = true;
+                AutoReset.isSetSeed = seedTextField.isVisible();
                 client.openScreen(new CreateWorldScreen(this));
             }));
 
@@ -62,7 +65,15 @@ public abstract class TitleScreenMixin extends Screen {
                     seedTextField.setSuggestion("");
                 }
             });
-            seedTextField.setVisible(true);
+
+            // Hide by default
+            seedTextField.setVisible(false);
+
+            // Add a new button to show/hide the text field
+            this.addButton(new ButtonWidget(this.width / 2 - 124 - 24, y, 20, 20, new LiteralText(""), (buttonWidget) -> {
+                seedTextField.setVisible(!seedTextField.visible);
+            }));
+
             if (seedTextField.getText().isEmpty()) {
                 seedTextField.setSuggestion("-3294725893620991126");
             }
@@ -78,8 +89,18 @@ public abstract class TitleScreenMixin extends Screen {
         @Inject(method = "render", at = @At("TAIL"))
     private void goldBootsOverlayMixin(MatrixStack matrices, int mouseX, int mouseY, float delta, CallbackInfo ci) {
         int y = this.height / 4 + 48;
-        this.client.getTextureManager().bindTexture(GOLD_BOOTS);
+        //  {{ Boots button
+        if (this.seedTextField.visible) {
+            this.client.getTextureManager().bindTexture(DIAMOND_BOOTS);
+        } else {
+            this.client.getTextureManager().bindTexture(GOLD_BOOTS);
+        }
         drawTexture(matrices,(width/2)-122,y+2,0.0F,0.0F,16,16,16,16);
+        // }} Boots button
+
+        // Seed button
+        this.client.getTextureManager().bindTexture(SEEDS);
+        drawTexture(matrices,(width/2)-122-24,y+2,0.0F,0.0F,16,16,16,16);
 
         // TitleScreen only renders buttons by default, add special case for the TextField.
         this.seedTextField.render(matrices, mouseX, mouseY, delta);

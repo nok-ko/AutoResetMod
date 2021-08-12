@@ -37,10 +37,12 @@ public abstract class CreateWorldScreenMixin {
             field_24290 = Difficulty.EASY;
 
             // Worldgen settings, where we set the seed
-            Properties worldGenProperties = new Properties();
-            worldGenProperties.setProperty("level-seed", AutoReset.seed);
+            if (AutoReset.isSetSeed) {
+                Properties worldGenProperties = new Properties();
+                worldGenProperties.setProperty("level-seed", AutoReset.seed);
+                ((OptionsAccessor) this.moreOptionsDialog).setGeneratorOptions(GeneratorOptions.fromProperties(worldGenProperties));
+            }
 
-            ((OptionsAccessor) this.moreOptionsDialog).setGeneratorOptions(GeneratorOptions.fromProperties(worldGenProperties));
             levelNameField.setText("Speedrun #"+AutoReset.getNextAttempt());
             createLevel();
         }

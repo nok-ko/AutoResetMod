@@ -16,6 +16,7 @@ public class AutoReset implements ModInitializer {
     public static boolean isPlaying = false;
     public static Logger LOGGER = LogManager.getLogger();
     public static String seed = "";
+    public static boolean isSetSeed;
 
     public static void log(Level level, String message) {
         LOGGER.log(level, "[" + MOD_NAME + "] " + message);
@@ -28,8 +29,8 @@ public class AutoReset implements ModInitializer {
             Scanner fileReader = new Scanner(file);
             String string = fileReader.nextLine().trim();
             fileReader.close();
-            if (string.contains(";")) {
-                seed = string.substring(string.indexOf(";"));
+            if (string.contains(";") && string.length() > 1) {
+                seed = string.substring(string.indexOf(";")+1);
             }
         }
         return seed;
