@@ -1,6 +1,7 @@
 package me.duncanruns.autoreset;
 
 import net.fabricmc.api.ModInitializer;
+import net.minecraft.world.gen.GeneratorOptions;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -36,7 +37,7 @@ public class AutoReset implements ModInitializer {
         return seed;
     }
 
-    public static int getNextAttempt() {
+    public static int getNextAttempt(long seedValue) {
         try {
             File file = new File("attempts.txt");
             int value;
@@ -54,7 +55,10 @@ public class AutoReset implements ModInitializer {
             }
             value++;
             FileWriter fileWriter = new FileWriter(file);
-            fileWriter.write(String.format("%d;%s", value, seed));
+
+            String seedOrRandom = AutoReset.isSetSeed ? seed : String.valueOf(seedValue);
+
+            fileWriter.write(String.format("%d;%s", value, seedOrRandom));
             fileWriter.close();
             return value;
         } catch (IOException ignored) {
