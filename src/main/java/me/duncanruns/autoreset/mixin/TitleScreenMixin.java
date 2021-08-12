@@ -53,11 +53,9 @@ public abstract class TitleScreenMixin extends Screen {
                     : new LiteralText("Start SSG Run!");
 
             bootsButton = addButton(new ButtonWidget(this.width / 2 - 124, y, 20, 20, new LiteralText(""), (buttonWidget) -> {
-                if (allowSubmit || !seedTextField.visible) {
-                    AutoReset.isPlaying = true;
-                    AutoReset.isSetSeed = isSetSeedRun();
-                    client.openScreen(new CreateWorldScreen(this));
-                }
+                AutoReset.isPlaying = true;
+                AutoReset.isSetSeed = isSetSeedRun();
+                client.openScreen(new CreateWorldScreen(this));
             }, (button, matrices, mouseX, mouseY) -> {
                 if (isSetSeedRun()) {
                     renderTooltip(matrices, bootsTextSSG, mouseX, mouseY);
