@@ -33,6 +33,7 @@ public abstract class TitleScreenMixin extends Screen {
     private TextFieldWidget seedTextField;
     private ButtonWidget bootsButton;
     private ButtonWidget seedButton;
+    private boolean allowSubmit;
 
     protected TitleScreenMixin(Text title) {
         super(title);
@@ -58,9 +59,11 @@ public abstract class TitleScreenMixin extends Screen {
                     : new LiteralText("Start SSG Run!");
 
             bootsButton = addButton(new ButtonWidget(this.width / 2 - 124, y, 20, 20, new LiteralText(""), (buttonWidget) -> {
-                AutoReset.isPlaying = true;
-                AutoReset.isSetSeed = isSSGRun();
-                client.openScreen(new CreateWorldScreen(this));
+                if (allowSubmit || !seedTextField.visible) {
+                    AutoReset.isPlaying = true;
+                    AutoReset.isSetSeed = isSSGRun();
+                    client.openScreen(new CreateWorldScreen(this));
+                }
             }, (button, matrices, mouseX, mouseY) -> {
                 if (isSSGRun()) {
                     renderTooltip(matrices, bootsTextSSG, mouseX, mouseY);
@@ -81,6 +84,14 @@ public abstract class TitleScreenMixin extends Screen {
                     seedTextField.setSuggestion(suggestion);
                 } else {
                     seedTextField.setSuggestion("");
+//                    AutoReset.log(Level.INFO, string);
+                    if (string.contains(";")) {
+                        seedTextField.setEditableColor(0xFF0000);
+                        allowSubmit = false;
+                    } else {
+                        seedTextField.setEditableColor(0xE0E0E0);
+                        allowSubmit = true;
+                    }
                 }
             });
 
@@ -115,7 +126,7 @@ public abstract class TitleScreenMixin extends Screen {
     @Inject(method = "render", at = @At("TAIL"))
     private void renderButtonOverlays(MatrixStack matrices, int mouseX, int mouseY, float delta, CallbackInfo ci) {
         // Boots button
-        this.client.getTextureManager().bindTexture(this.seedTextField.visible ? DIAMOND_BOOTS : GOLD_BOOTS);
+        this.client.getTextureManager().bindTexture(isSSGRun() ? DIAMOND_BOOTS : GOLD_BOOTS);
         drawTexture(matrices, bootsButton.x+2, bootsButton.y+2, 0.0F,0.0F,16,16,16,16);
 
         // Seed button

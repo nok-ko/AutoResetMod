@@ -1,6 +1,7 @@
 package me.duncanruns.autoreset;
 
 import net.fabricmc.api.ModInitializer;
+import net.minecraft.util.Pair;
 import net.minecraft.world.gen.GeneratorOptions;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -9,6 +10,7 @@ import org.apache.logging.log4j.Logger;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class AutoReset implements ModInitializer {
@@ -24,6 +26,7 @@ public class AutoReset implements ModInitializer {
     }
 
     // this Scanner code is the least idiomatic Java I've ever written but it works, okay?!
+    // I should really use regexes here
     public static String getLastSeed() throws IOException {
         String seed = "";
         File file = new File("attempts.txt");
@@ -36,42 +39,45 @@ public class AutoReset implements ModInitializer {
             string = string.trim();
             fileReader.close();
             if (string.contains(";") && string.length() > 1) {
-                seed = string.substring(string.indexOf(";")+1);
+                // The middle bit
+                seed = string.substring(string.indexOf(";")+1, string.lastIndexOf(";"));
             }
         }
         return seed;
     }
 
-    public static int getNextAttempt(long seedValue) {
+    public static  Pair<Integer, String> getNextAttempt(long seedValue) {
+        String category = AutoReset.isSetSeed ? "Set" : "Random";
+        HashMap<String, Integer> attemptsPerCategory = new HashMap<>();
         try {
             File file = new File("attempts.txt");
-            int value;
+            int attemptCount;
             if (file.exists()) {
                 Scanner fileReader = new Scanner(file);
-                String string = "0;0";
+                String string;
                 while (fileReader.hasNextLine()) {
                     string = fileReader.nextLine();
+                    try {
+                        attemptCount = Integer.parseInt(string.substring(0, string.indexOf(";")));
+                    } catch (NumberFormatException ignored) {
+                        attemptCount = 0;
+                    }
+                    attemptsPerCategory.put(string.substring(string.lastIndexOf(";")+1).trim(), attemptCount);
                 }
-                string = string.trim();
                 fileReader.close();
-                try {
-                    value = Integer.parseInt(string.substring(0, string.indexOf(";")));
-                } catch (NumberFormatException ignored) {
-                    value = 0;
-                }
-            } else {
-                value = 0;
             }
-            value++;
-            FileWriter fileWriter = new FileWriter(file, true);
+            attemptCount = attemptsPerCategory.getOrDefault(category, 0);
+            attemptCount++;
+            FileWriter fileWriter = new FileWriter(file, true); // Append mode
 
             String seedOrRandom = AutoReset.isSetSeed ? AutoReset.seed : String.valueOf(seedValue);
 
-            fileWriter.append(String.format("%d;%s\n", value, seedOrRandom));
+
+            fileWriter.append(String.format("%d;%s;%s\n", attemptCount, seedOrRandom, category));
             fileWriter.close();
-            return value;
+            return new Pair<>(attemptCount, category);
         } catch (IOException ignored) {
-            return -1;
+            return new Pair<>(-1, category);
         }
     }
 

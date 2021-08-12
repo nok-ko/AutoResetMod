@@ -4,6 +4,7 @@ import me.duncanruns.autoreset.AutoReset;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.gui.screen.world.MoreOptionsDialog;
 import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.util.Pair;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.gen.GeneratorOptions;
 import org.spongepowered.asm.mixin.Final;
@@ -40,11 +41,11 @@ public abstract class CreateWorldScreenMixin {
             if (AutoReset.isSetSeed) {
                 Properties worldGenProperties = new Properties();
                 worldGenProperties.setProperty("level-seed", AutoReset.seed);
-                ((OptionsAccessor) this.moreOptionsDialog).setGeneratorOptions(GeneratorOptions.fromProperties(worldGenProperties));
+                ((OptionsAccessor) moreOptionsDialog).setGeneratorOptions(GeneratorOptions.fromProperties(worldGenProperties));
             }
 
-            int attempt = AutoReset.getNextAttempt(moreOptionsDialog.getGeneratorOptions(false).getSeed());
-            levelNameField.setText("Speedrun #" + attempt);
+            Pair<Integer, String> attempt = AutoReset.getNextAttempt(moreOptionsDialog.getGeneratorOptions(false).getSeed());
+            levelNameField.setText(String.format("Speedrun #%d (%s)", attempt.getLeft(), attempt.getRight()));
             createLevel();
         }
     }
