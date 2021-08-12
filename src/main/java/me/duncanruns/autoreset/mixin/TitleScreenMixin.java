@@ -70,7 +70,7 @@ public abstract class TitleScreenMixin extends Screen {
             seedTextField.setVisible(false);
 
             // Add a new button to show/hide the text field
-            this.addButton(new ButtonWidget(this.width / 2 - 124 - 24, y, 20, 20, new LiteralText(""), (buttonWidget) -> {
+            this.addButton(new ButtonWidget(this.width / 2 - 124, y+24, 20, 20, new LiteralText(""), (buttonWidget) -> {
                 seedTextField.setVisible(!seedTextField.visible);
             }));
 
@@ -100,7 +100,7 @@ public abstract class TitleScreenMixin extends Screen {
 
         // Seed button
         this.client.getTextureManager().bindTexture(SEEDS);
-        drawTexture(matrices,(width/2)-122-24,y+2,0.0F,0.0F,16,16,16,16);
+        drawTexture(matrices,(width/2)-122,y+2+24,0.0F,0.0F,16,16,16,16);
 
         // TitleScreen only renders buttons by default, add special case for the TextField.
         this.seedTextField.render(matrices, mouseX, mouseY, delta);
