@@ -2,14 +2,18 @@ package me.duncanruns.autoreset.mixin;
 
 import me.duncanruns.autoreset.AutoReset;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
-import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.screen.world.MoreOptionsDialog;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.world.Difficulty;
+import net.minecraft.world.gen.GeneratorOptions;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import java.util.Properties;
 
 @Mixin(CreateWorldScreen.class)
 public abstract class CreateWorldScreenMixin {
@@ -23,12 +27,20 @@ public abstract class CreateWorldScreenMixin {
     @Shadow
     protected abstract void createLevel();
 
+    @Shadow @Final public MoreOptionsDialog moreOptionsDialog;
+
     @Inject(method = "init", at = @At("TAIL"))
     private void autoStartMixin(CallbackInfo info) {
         // If auto reset mode is on, set difficulty to easy and instantly create world.
         if (AutoReset.isPlaying) {
             field_24289 = Difficulty.EASY;
             field_24290 = Difficulty.EASY;
+
+            // Worldgen settings, where we set the seed
+            Properties worldGenProperties = new Properties();
+            worldGenProperties.setProperty("level-seed", AutoReset.seed);
+
+            ((OptionsAccessor) this.moreOptionsDialog).setGeneratorOptions(GeneratorOptions.fromProperties(worldGenProperties));
             levelNameField.setText("Speedrun #"+AutoReset.getNextAttempt());
             createLevel();
         }
