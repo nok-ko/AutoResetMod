@@ -70,10 +70,10 @@ public class AutoReset implements ModInitializer {
             attemptCount++;
             FileWriter fileWriter = new FileWriter(file, true); // Append mode
 
-            String seedOrRandom = AutoReset.isSetSeed ? AutoReset.seed : String.valueOf(seedValue);
+            String seedOrBlank = AutoReset.isSetSeed ? AutoReset.seed : "";
 
 
-            fileWriter.append(String.format("%d;%s;%s\n", attemptCount, seedOrRandom, category));
+            fileWriter.append(String.format("%d;%s;%s\n", attemptCount, seedOrBlank, category));
             fileWriter.close();
             return new Pair<>(attemptCount, category);
         } catch (IOException ignored) {
