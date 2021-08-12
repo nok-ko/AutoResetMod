@@ -54,10 +54,10 @@ public abstract class TitleScreenMixin extends Screen {
 
             // Add a new text field for the seed
             this.seedTextField = this.addChild(new TextFieldWidget(this.textRenderer, (this.width / 2)-100, y-24, 200, 20, new TranslatableText("selectWorld.enterSeed")));
-            AutoReset.log(Level.INFO, String.format("%d, %d", seedTextField.x, seedTextField.y));
+//            AutoReset.log(Level.DEBUG, String.format("%d, %d", seedTextField.x, seedTextField.y));
             seedTextField.setText(AutoReset.seed);
             seedTextField.setChangedListener((string) -> {
-                AutoReset.log(Level.INFO, string);
+//                AutoReset.log(Level.DEBUG, string);
                 AutoReset.seed = seedTextField.getText();
                 if (string.isEmpty()) {
                     seedTextField.setSuggestion("-3294725893620991126");
@@ -80,23 +80,22 @@ public abstract class TitleScreenMixin extends Screen {
         }
     }
 
-    @Inject(method = "mouseClicked(DDI)Z", at = @At("HEAD"))
-    public void mouseClicked(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
-        AutoReset.log(Level.INFO, String.format("%f, %f", mouseX, mouseY));
-    }
+//    @Inject(method = "mouseClicked(DDI)Z", at = @At("HEAD"))
+//    public void mouseClicked(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
+//        AutoReset.log(Level.DEBUG, String.format("%f, %f", mouseX, mouseY));
+//    }
 
 
         @Inject(method = "render", at = @At("TAIL"))
     private void goldBootsOverlayMixin(MatrixStack matrices, int mouseX, int mouseY, float delta, CallbackInfo ci) {
+        assert this.client != null;
+
+        // reference height
         int y = this.height / 4 + 48;
-        //  {{ Boots button
-        if (this.seedTextField.visible) {
-            this.client.getTextureManager().bindTexture(DIAMOND_BOOTS);
-        } else {
-            this.client.getTextureManager().bindTexture(GOLD_BOOTS);
-        }
+
+        //  Boots button
+        this.client.getTextureManager().bindTexture(this.seedTextField.visible ? DIAMOND_BOOTS : GOLD_BOOTS);
         drawTexture(matrices,(width/2)-122,y+2,0.0F,0.0F,16,16,16,16);
-        // }} Boots button
 
         // Seed button
         this.client.getTextureManager().bindTexture(SEEDS);
