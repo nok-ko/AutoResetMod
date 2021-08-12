@@ -1,7 +1,6 @@
 package me.duncanruns.autoreset.mixin;
 
 import me.duncanruns.autoreset.AutoReset;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
@@ -13,15 +12,10 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Language;
-import org.apache.logging.log4j.Level;
-import org.jetbrains.annotations.NotNull;
-import org.lwjgl.system.NonnullDefault;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 // IDE Tax
 @SuppressWarnings("ConstantConditions")
@@ -33,7 +27,7 @@ public abstract class TitleScreenMixin extends Screen {
     private TextFieldWidget seedTextField;
     private ButtonWidget bootsButton;
     private ButtonWidget seedButton;
-    private boolean allowSubmit;
+//    private boolean allowSubmit;
 
     protected TitleScreenMixin(Text title) {
         super(title);
@@ -61,11 +55,11 @@ public abstract class TitleScreenMixin extends Screen {
             bootsButton = addButton(new ButtonWidget(this.width / 2 - 124, y, 20, 20, new LiteralText(""), (buttonWidget) -> {
                 if (allowSubmit || !seedTextField.visible) {
                     AutoReset.isPlaying = true;
-                    AutoReset.isSetSeed = isSSGRun();
+                    AutoReset.isSetSeed = isSetSeedRun();
                     client.openScreen(new CreateWorldScreen(this));
                 }
             }, (button, matrices, mouseX, mouseY) -> {
-                if (isSSGRun()) {
+                if (isSetSeedRun()) {
                     renderTooltip(matrices, bootsTextSSG, mouseX, mouseY);
                 } else {
                     renderTooltip(matrices, bootsTextRSG, mouseX, mouseY);
@@ -85,13 +79,15 @@ public abstract class TitleScreenMixin extends Screen {
                 } else {
                     seedTextField.setSuggestion("");
 //                    AutoReset.log(Level.INFO, string);
-                    if (string.contains(";")) {
-                        seedTextField.setEditableColor(0xFF0000);
-                        allowSubmit = false;
-                    } else {
-                        seedTextField.setEditableColor(0xE0E0E0);
-                        allowSubmit = true;
-                    }
+                    // wait, we don't actually care about semicolons here, the seed is
+                    // going to be a `long` by the time it's in attempts.txt, anyway.
+//                    if (string.contains(";")) {
+//                        seedTextField.setEditableColor(0xFF0000);
+//                        allowSubmit = false;
+//                    } else {
+//                        seedTextField.setEditableColor(0xE0E0E0);
+//                        allowSubmit = true;
+//                    }
                 }
             });
 
@@ -109,7 +105,8 @@ public abstract class TitleScreenMixin extends Screen {
         }
     }
 
-    private boolean isSSGRun() {
+    // If the seed is set and the menu is open, assume the user wants a set-seed run.
+    private boolean isSetSeedRun() {
         return seedTextField.isVisible() && !seedTextField.getText().isEmpty();
     }
 
@@ -126,7 +123,7 @@ public abstract class TitleScreenMixin extends Screen {
     @Inject(method = "render", at = @At("TAIL"))
     private void renderButtonOverlays(MatrixStack matrices, int mouseX, int mouseY, float delta, CallbackInfo ci) {
         // Boots button
-        this.client.getTextureManager().bindTexture(isSSGRun() ? DIAMOND_BOOTS : GOLD_BOOTS);
+        this.client.getTextureManager().bindTexture(isSetSeedRun() ? DIAMOND_BOOTS : GOLD_BOOTS);
         drawTexture(matrices, bootsButton.x+2, bootsButton.y+2, 0.0F,0.0F,16,16,16,16);
 
         // Seed button
